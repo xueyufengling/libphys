@@ -104,7 +104,7 @@ template<size_t _PhaseSpaceDim, typename _T>
 inline phase_point<_PhaseSpaceDim, _T> xi(const math::vector<_PhaseSpaceDim, _T>& qp)
 {
 	__assert_phase_space_dim__(_PhaseSpaceDim);
-	return phase_point<_PhaseSpaceDim, _T>(qp, math::algebra::identity<phase_matrix<_PhaseSpaceDim, _T>, math::algebra::mul>());
+	return phase_point<_PhaseSpaceDim, _T>(qp, math::identity<phase_matrix<_PhaseSpaceDim, _T>, math::mul>());
 }
 
 /**
@@ -160,16 +160,17 @@ inline phase_point<1, _T> t(const math::ad_point<_PhaseSpaceDim, _PhaseSpaceDim,
  * 		  根据正则方程导出：dq/dt=∂H/∂p
  */
 template<size_t _PhaseSpaceDim, typename _T>
-inline const math::vector<degree_of_freedom(_PhaseSpaceDim), _T>& dq_dt(const math::ad_point<1, _PhaseSpaceDim, _T>& H)
+inline math::vector<degree_of_freedom(_PhaseSpaceDim), _T> dq_dt(const math::ad_point<1, _PhaseSpaceDim, _T>& H)
 {
 	constexpr size_t dof = degree_of_freedom(_PhaseSpaceDim);
-	return H.derivative[0].template slice < dof > (0);
+	return H.derivative[0].template slice < dof > (dof);
 }
 
 template<size_t _PhaseSpaceDim, typename _T>
 inline _T dq_dt(const math::ad_point<1, _PhaseSpaceDim, _T>& H, size_t i)
 {
-	return H.derivative[0][i];
+	constexpr size_t dof = degree_of_freedom(_PhaseSpaceDim);
+	return H.derivative[0][dof + i];
 }
 
 /**
@@ -177,16 +178,16 @@ inline _T dq_dt(const math::ad_point<1, _PhaseSpaceDim, _T>& H, size_t i)
  * 		  根据正则方程导出：dp/dt=-∂H/∂q
  */
 template<size_t _PhaseSpaceDim, typename _T>
-inline const math::vector<degree_of_freedom(_PhaseSpaceDim), _T>& dp_dt(const math::ad_point<1, _PhaseSpaceDim, _T>& H)
+inline math::vector<degree_of_freedom(_PhaseSpaceDim), _T> dp_dt(const math::ad_point<1, _PhaseSpaceDim, _T>& H)
 {
 	constexpr size_t dof = degree_of_freedom(_PhaseSpaceDim);
-	return H.derivative[0].template slice < dof > (dof);
+	return -H.derivative[0].template slice < dof > (0);
 }
 
 template<size_t _PhaseSpaceDim, typename _T>
 inline _T dp_dt(const math::ad_point<1, _PhaseSpaceDim, _T>& H, size_t i)
 {
-	return -H.derivative[0][degree_of_freedom(_PhaseSpaceDim) + i];
+	return -H.derivative[0][i];
 }
 
 /**
@@ -260,7 +261,7 @@ template<size_t _PhaseSpaceDim, typename _T>
 inline Hamiltonian<_PhaseSpaceDim, _T> V_harmonic_oscillator(_T k, const math::ad_point<_PhaseSpaceDim, _PhaseSpaceDim, _T>& qp)
 {
 	phase_point<degree_of_freedom(_PhaseSpaceDim), _T> _q = q(qp);
-	return Hq<_PhaseSpaceDim>((_q * _q) * (-k));
+	return Hq<_PhaseSpaceDim>((_q * _q) * k);
 }
 
 /**
