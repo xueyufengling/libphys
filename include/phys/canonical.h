@@ -256,11 +256,14 @@ inline Hamiltonian<_PhaseSpaceDim, _T> T_free_particle(_T k, const math::ad_poin
 
 /**
  * @brief 谐振子势
+ * @param eq_pos 平衡位置
  */
 template<size_t _PhaseSpaceDim, typename _T>
-inline Hamiltonian<_PhaseSpaceDim, _T> V_harmonic_oscillator(_T k, const math::ad_point<_PhaseSpaceDim, _PhaseSpaceDim, _T>& qp)
+inline Hamiltonian<_PhaseSpaceDim, _T> V_harmonic_oscillator(_T k, const math::ad_point<_PhaseSpaceDim, _PhaseSpaceDim, _T>& qp,
+		const math::vector<degree_of_freedom(_PhaseSpaceDim), _T>& eq_pos = math::vector<degree_of_freedom(_PhaseSpaceDim), _T>::zero())
 {
 	phase_point<degree_of_freedom(_PhaseSpaceDim), _T> _q = q(qp);
+	_q.value -= eq_pos;
 	return Hq<_PhaseSpaceDim>((_q * _q) * k);
 }
 
@@ -268,18 +271,23 @@ inline Hamiltonian<_PhaseSpaceDim, _T> V_harmonic_oscillator(_T k, const math::a
  * @brief 库伦势/引力势
  */
 template<size_t _PhaseSpaceDim, typename _T>
-inline Hamiltonian<_PhaseSpaceDim, _T> V_coulomb(_T k, const math::ad_point<_PhaseSpaceDim, _PhaseSpaceDim, _T>& qp)
+inline Hamiltonian<_PhaseSpaceDim, _T> V_coulomb(_T k, const math::ad_point<_PhaseSpaceDim, _PhaseSpaceDim, _T>& qp,
+		const math::vector<degree_of_freedom(_PhaseSpaceDim), _T>& source = math::vector<degree_of_freedom(_PhaseSpaceDim), _T>::zero())
 {
-	return Hq<_PhaseSpaceDim>(-k / q(qp).norm());
+	phase_point<degree_of_freedom(_PhaseSpaceDim), _T> _q = q(qp);
+	_q.value -= source;
+	return Hq<_PhaseSpaceDim>(-k / _q.norm());
 }
 
 /**
  * @brief 反平方势
  */
 template<size_t _PhaseSpaceDim, typename _T>
-inline Hamiltonian<_PhaseSpaceDim, _T> V_inverse_square(_T k, const math::ad_point<_PhaseSpaceDim, _PhaseSpaceDim, _T>& qp)
+inline Hamiltonian<_PhaseSpaceDim, _T> V_inverse_square(_T k, const math::ad_point<_PhaseSpaceDim, _PhaseSpaceDim, _T>& qp,
+		const math::vector<degree_of_freedom(_PhaseSpaceDim), _T>& source = math::vector<degree_of_freedom(_PhaseSpaceDim), _T>::zero())
 {
 	phase_point<degree_of_freedom(_PhaseSpaceDim), _T> _q = q(qp);
+	_q.value -= source;
 	return Hq<_PhaseSpaceDim>(-k / (_q * _q));
 }
 
