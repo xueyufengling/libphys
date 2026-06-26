@@ -10,17 +10,13 @@ find_package(math REQUIRED)
 
 set(PROJECT_SOURCE_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
-set(SOURCE_DIR "${CMAKE_SOURCE_DIR}/src")
-file(GLOB_RECURSE SOURCES "${SOURCE_DIR}/*.cpp")
+set(SOURCE_DIR "${CMAKE_SOURCE_DIR}/include")
 
-add_compile_options(-g -O0)
+add_library(${PROJECT_NAME} INTERFACE)
 
-add_library(${PROJECT_NAME} SHARED ${SOURCES})
-
-target_include_directories(${PROJECT_NAME} PUBLIC "${PROJECT_SOURCE_INCLUDE_DIRS}")
-target_include_directories(${PROJECT_NAME} PUBLIC "${tplmp_INCLUDE_DIRS}")
-target_include_directories(${PROJECT_NAME} PUBLIC "${math_INCLUDE_DIRS}")
-target_link_libraries(${PROJECT_NAME} PUBLIC quadmath)
+target_include_directories(${PROJECT_NAME} INTERFACE "${PROJECT_SOURCE_INCLUDE_DIRS}")
+target_include_directories(${PROJECT_NAME} INTERFACE "${tplmp_INCLUDE_DIRS}")
+target_include_directories(${PROJECT_NAME} INTERFACE "${math_INCLUDE_DIRS}")
 
 # Install
  

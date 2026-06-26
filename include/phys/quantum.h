@@ -28,14 +28,14 @@ constexpr size_t spacetime_dimension(size_t space_dimension)
 	return space_dimension + 1;
 }
 
-template<size_t _SpacetimeDim, typename _T>
-using spacetime_vector = math::vector<_SpacetimeDim, _T>;
+template<typename _T, size_t _SpacetimeDim>
+using spacetime_vector = math::vector<_T, _SpacetimeDim>;
 
-template<size_t _SpacetimeDim, typename _T>
-using spacetime_matrix = math::matrix<_SpacetimeDim, _SpacetimeDim, _T>;
+template<typename _T, size_t _SpacetimeDim>
+using spacetime_matrix = math::matrix<_T, _SpacetimeDim, _SpacetimeDim>;
 
-template<size_t _ProjectionDim, typename _T>
-using spacetime_point = math::ad_point<_ProjectionDim, _ProjectionDim, _T>;
+template<typename _T, size_t _ProjectionDim>
+using spacetime_point = math::ad_point<_T, _ProjectionDim, _ProjectionDim>;
 
 }
 }
